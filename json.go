@@ -11,7 +11,8 @@ import (
 // Gonfig implementation
 // Implements the Gonfig interface
 type JsonGonfig struct {
-	obj map[string]interface{}
+	obj                map[string]interface{}
+	configKeySeparator string
 }
 
 // FromJson reads the contents from the supplied reader.
@@ -26,7 +27,14 @@ func FromJson(reader io.Reader) (Gonfig, error) {
 	if err := json.Unmarshal(jsonBytes, &obj); err != nil {
 		return nil, err
 	}
-	return &JsonGonfig{obj}, nil
+	return &JsonGonfig{
+		obj:                obj,
+		configKeySeparator: ".", // it is a default config key separator.
+	}, nil
+}
+
+func (jgonfig *JsonGonfig) ConfigKeySeparator(separator string) {
+	jgonfig.configKeySeparator = separator
 }
 
 // GetString uses Get to fetch the value behind the supplied key.
@@ -111,7 +119,7 @@ func (jgonfig *JsonGonfig) GetAs(key string, target interface{}) error {
 // If supplied key is not found and defaultValue is set to nil it returns a KeyNotFoundError
 // If supplied key path goes deeper into a non-map type (string, int, bool) it returns a UnexpectedValueTypeError
 func (jgonfig *JsonGonfig) Get(key string, defaultValue interface{}) (interface{}, error) {
-	parts := strings.Split(key, "/")
+	parts := strings.Split(key, jgonfig.configKeySeparator)
 	var tmp interface{} = jgonfig.obj
 	for index, part := range parts {
 		if len(part) == 0 {
