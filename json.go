@@ -29,7 +29,7 @@ func FromJson(reader io.Reader) (Gonfig, error) {
 	}
 	return &JsonGonfig{
 		obj:                obj,
-		configKeySeparator: ".", // it is a default config key separator.
+		configKeySeparator: "/", // it is a default config key separator.
 	}, nil
 }
 

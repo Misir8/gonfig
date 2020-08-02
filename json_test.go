@@ -256,3 +256,30 @@ func TestGetAs(t *testing.T) {
 		t.Fail()
 	}
 }
+
+
+func TestConfigKeySeparator1(t *testing.T) {
+	reader := bytes.NewReader([]byte(`
+		{
+			"some" : {
+				"value" : 321
+			}
+		}
+	`))
+	config, err := FromJson(reader)
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+	config.ConfigKeySeparator(".")
+	value, err := config.GetInt("some.value", 123)
+	if err != nil {
+		t.Error(err)
+		t.Fail()
+	}
+
+	if value != 321 {
+		t.Error(fmt.Sprintf("Expected value is 321 but value %v" , value))
+	}
+
+}

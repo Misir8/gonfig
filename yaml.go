@@ -19,5 +19,5 @@ func FromYml(reader io.Reader) (Gonfig, error) {
 	if err := yaml.Unmarshal(inputBytes, &obj); err != nil {
 		return nil, err
 	}
-	return &JsonGonfig{obj}, nil
+	return &JsonGonfig{obj, "."}, nil
 }
